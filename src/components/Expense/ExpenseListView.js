@@ -15,9 +15,8 @@ import classNames from 'classnames';
 import Button from 'material-ui/Button';
 import Save from '@material-ui/icons/Save';
 
-import {observer} from 'mobx-react'
-import { observable, extendObservable } from 'mobx'
-
+import {observer} from 'mobx-react';
+import {observable} from 'mobx';
 
 const styles = theme => ({
   root: {
@@ -42,28 +41,22 @@ const styles = theme => ({
   },
   chip: {
     margin: theme.spacing.unit,
-    backgroundColor:'#212121',
-    color:"#fff"
+    backgroundColor: '#212121',
+    color: '#fff',
   },
 });
 
+@observer class TableExampleControlled extends Component {
+  @observable name='';
+  @observable price=0;
+  @observable quantity=0;
 
-const TableExampleControlled = observer(class TableExampleControlled extends Component {
-  
   state = {
     selected: [],
   };
 
-  constructor() {
-    extendObservable(this, {
-    name :'',
-    price :0,
-    quantity : 0
-    }); 
-  }
-
   isSelected = index => {
-    return this.state.selected.indexOf (index) !== -1
+    return this.state.selected.indexOf (index) !== -1;
   };
 
   handleRowSelection = selectedRows => {
@@ -72,18 +65,20 @@ const TableExampleControlled = observer(class TableExampleControlled extends Com
     });
   };
 
-  handleAddExpense = (item) => {
+  handleAddExpense = item => {
     this.props.list.addItem ({
-      name: 'Second Item',
-      price: 10,
-      quantity: 2,
-    });
+      name: this.name,
+      price: parseInt(this.price,10),
+      quantity: parseInt(this.quantity,10),
+    });    
+    this.clear()
   };
 
-  updateName (value) {
-    console.log(this.name)
-    this.name = value
-  }
+  clear = () => {
+    this.name = ''
+    this.price = 0
+    this.quantity = 0
+  }  
 
   render () {
     const {classes, list} = this.props;
@@ -91,9 +86,7 @@ const TableExampleControlled = observer(class TableExampleControlled extends Com
     console.log (l);
     return (
       <div className={classes.root}>
-      <h1>Name:{this.name}</h1>
-      <h1>{this.quantity}</h1>
-      <h1>{this.price}</h1>
+
         <Grid container>
           <Grid item xs={12} sm={6}>
             <Table>
@@ -106,16 +99,20 @@ const TableExampleControlled = observer(class TableExampleControlled extends Com
                 </TableRow>
               </TableHead>
               <TableBody>
-                {l.map ((ele,id) => 
+                {l.map ((ele, id) => (
                   <TableRow selected={this.isSelected (0)} key={id}>
                     <TableCell padding="dense">{id}</TableCell>
                     <TableCell padding="dense">{ele.name}</TableCell>
                     <TableCell padding="dense">{ele.quantity}</TableCell>
                     <TableCell padding="dense">
-                      {ele.totalPrice}<Chip label={"Each "+ele.price} className={classes.chip} />
+                      {ele.totalPrice}
+                      <Chip
+                        label={'Each ' + ele.price}
+                        className={classes.chip}
+                      />
                     </TableCell>
                   </TableRow>
-                )}
+                ))}
               </TableBody>
             </Table>
           </Grid>
@@ -133,7 +130,9 @@ const TableExampleControlled = observer(class TableExampleControlled extends Com
                   id="number"
                   label="Enter Name"
                   value={this.name}
-                  onChange={(e) => {this.updateName(e.target.value)}}
+                  onChange={e => {
+                    this.name = e.target.value;
+                  }}
                   type="text"
                   className={classes.textField}
                   InputLabelProps={{
@@ -147,7 +146,9 @@ const TableExampleControlled = observer(class TableExampleControlled extends Com
                   id="number1"
                   label="Enter Cost"
                   value={this.price}
-                  onChange={(e) => { this.price = e.target.value}}
+                  onChange={e => {
+                    this.price = e.target.value;
+                  }}
                   type="number"
                   className={classes.textField}
                   InputLabelProps={{
@@ -161,7 +162,7 @@ const TableExampleControlled = observer(class TableExampleControlled extends Com
                   id="numbe1r"
                   label="Quantity"
                   value={this.quantity}
-                  onChange={(e) => this.quantity = e.target.value}
+                  onChange={e => (this.quantity = e.target.value)}
                   type="number"
                   className={classes.textField}
                   InputLabelProps={{
@@ -175,7 +176,11 @@ const TableExampleControlled = observer(class TableExampleControlled extends Com
         </Grid>
         <Grid container justify="center">
           <Grid item>
-            <Button className={classes.button} variant="raised" size="small">
+            <Button 
+              className={classes.button}
+              variant="raised" size="small"
+              onClick={this.handleAddExpense}
+            >
               <Save
                 className={classNames (classes.leftIcon, classes.iconSmall)}
               />
@@ -186,6 +191,6 @@ const TableExampleControlled = observer(class TableExampleControlled extends Com
       </div>
     );
   }
-})
+}
 
-export default withStyles(styles)(TableExampleControlled)
+export default withStyles (styles) (TableExampleControlled);
