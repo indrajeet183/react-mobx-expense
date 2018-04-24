@@ -60,7 +60,7 @@ const styles = {
                 Title
               </Typography>
               <Typography variant="title" color="inherit" className={classes.flex}>
-                {this.state.date}}
+                {this.state.date}
               </Typography>
               {auth && (
                 <div>
