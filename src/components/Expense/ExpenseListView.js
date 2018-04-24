@@ -12,9 +12,12 @@ import {withStyles} from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
 import classNames from 'classnames';
-
 import Button from 'material-ui/Button';
 import Save from '@material-ui/icons/Save';
+
+import {observer} from 'mobx-react'
+import { observable, extendObservable } from 'mobx'
+
 
 const styles = theme => ({
   root: {
@@ -44,13 +47,23 @@ const styles = theme => ({
   },
 });
 
-class TableExampleControlled extends Component {
+
+const TableExampleControlled = observer(class TableExampleControlled extends Component {
+  
   state = {
     selected: [],
   };
 
+  constructor() {
+    extendObservable(this, {
+    name :'',
+    price :0,
+    quantity : 0
+    }); 
+  }
+
   isSelected = index => {
-    return this.state.selected.indexOf (index) !== -1;
+    return this.state.selected.indexOf (index) !== -1
   };
 
   handleRowSelection = selectedRows => {
@@ -59,13 +72,28 @@ class TableExampleControlled extends Component {
     });
   };
 
+  handleAddExpense = (item) => {
+    this.props.list.addItem ({
+      name: 'Second Item',
+      price: 10,
+      quantity: 2,
+    });
+  };
+
+  updateName (value) {
+    console.log(this.name)
+    this.name = value
+  }
+
   render () {
     const {classes, list} = this.props;
     const l = [...list.items];
     console.log (l);
     return (
       <div className={classes.root}>
-
+      <h1>Name:{this.name}</h1>
+      <h1>{this.quantity}</h1>
+      <h1>{this.price}</h1>
         <Grid container>
           <Grid item xs={12} sm={6}>
             <Table>
@@ -104,8 +132,8 @@ class TableExampleControlled extends Component {
                 <TextField
                   id="number"
                   label="Enter Name"
-                  value={this.state.age}
-                  //onChange={this.handleChange('age')}
+                  value={this.name}
+                  onChange={(e) => {this.updateName(e.target.value)}}
                   type="text"
                   className={classes.textField}
                   InputLabelProps={{
@@ -116,10 +144,10 @@ class TableExampleControlled extends Component {
               </Grid>
               <Grid item>
                 <TextField
-                  id="number"
+                  id="number1"
                   label="Enter Cost"
-                  value={this.state.age}
-                  //onChange={this.handleChange('age')}
+                  value={this.price}
+                  onChange={(e) => { this.price = e.target.value}}
                   type="number"
                   className={classes.textField}
                   InputLabelProps={{
@@ -130,10 +158,10 @@ class TableExampleControlled extends Component {
               </Grid>
               <Grid item sm={2}>
                 <TextField
-                  id="number"
+                  id="numbe1r"
                   label="Quantity"
-                  value={this.state.age}
-                  //onChange={this.handleChange('age')}
+                  value={this.quantity}
+                  onChange={(e) => this.quantity = e.target.value}
                   type="number"
                   className={classes.textField}
                   InputLabelProps={{
@@ -158,6 +186,6 @@ class TableExampleControlled extends Component {
       </div>
     );
   }
-}
+})
 
-export default withStyles (styles) (TableExampleControlled);
+export default withStyles(styles)(TableExampleControlled)
