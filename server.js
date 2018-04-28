@@ -3,7 +3,7 @@ const app = require ('./app')
 // Connection URL
 const db = require ('./db')
 const url = process.env.MONGO_URI || 'mongodb://localhost:27017'
-
+console.log(url)
 // Database Name
 
 
