@@ -83,7 +83,6 @@ const styles = theme => ({
   render () {
     const {classes, list} = this.props;
     const l = [...list.items];
-    console.log (l);
     return (
       <div className={classes.root}>
 

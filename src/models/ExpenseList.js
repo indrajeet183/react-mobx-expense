@@ -1,5 +1,9 @@
 import { types } from 'mobx-state-tree';
 
+
+/**
+ * Expense model which holds individual item
+ */
 export const Expense = types.model({
     name:types.string,
     price:types.number,
@@ -20,9 +24,13 @@ export const Expense = types.model({
     }
 }))
 
+
+/**
+ * DailyExpense model which have arrays of Expense 
+ * Also have date as unique identifier
+ */
 export const DailyExpense = types.model({
     date:types.string,
-    //totalPrice:types.number,
     items:types.optional(types.array(Expense),[])
 }).actions(self => ({
     changeDate (newDate) {

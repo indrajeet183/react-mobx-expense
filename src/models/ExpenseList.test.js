@@ -11,10 +11,6 @@ it ('can create instance of model Expense', () => {
     quantity: 4,
   });
 
-  // expect (expense.name).toBe ('First');
-  // expect (expense.price).toBe (20);
-  // expect (expense.quantity).toBe (4);
-
   expect (getSnapshot (expense)).toMatchSnapshot ();
 });
 
@@ -26,12 +22,6 @@ it ('can create instance of DailyExpense', () => {
       {name: 'Second Item', price: 10, quantity: 2},
     ],
   });
-
-  // expect (dailyExpense.items.length).toBe (2);
-  // expect (dailyExpense.totalPrice).toBe (100);
-  // expect (dailyExpense.items[0].name).toBe ('First Item');
-  // expect (dailyExpense.items[0].price).toBe (20);
-  // expect (dailyExpense.items[0].quantity).toBe (4);
 
   expect (getSnapshot (dailyExpense)).toEqual ({
     date: today,
