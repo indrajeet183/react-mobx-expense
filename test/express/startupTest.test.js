@@ -8,6 +8,8 @@ beforeAll (done => {
     if (err) {
       console.log ('Unable to connect', err);
       process.exit (1);
+    }else{
+        console.log('Succesfully connected')
     }
   });
 });
