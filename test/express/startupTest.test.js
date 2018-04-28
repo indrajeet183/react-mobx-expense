@@ -1,7 +1,7 @@
 const request = require ('supertest');
 const app = require ('../../app');
 const db = require ('../../db.js');
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb://localhost:27017'
 
 beforeAll (done => {
   db.connect (url, err => {
@@ -15,6 +15,7 @@ beforeAll (done => {
 afterAll (done => {
   db.close ();
 });
+
 
 test ('should response the GET method',done => {
     const res = request (app).get ('/expense');
