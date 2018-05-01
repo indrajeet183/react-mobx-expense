@@ -14,9 +14,21 @@ import TextField from 'material-ui/TextField';
 import classNames from 'classnames';
 import Button from 'material-ui/Button';
 import Save from '@material-ui/icons/Save';
-
+import Select from 'material-ui/Select';
+import Input, {InputLabel} from 'material-ui/Input';
+import {MenuItem} from 'material-ui/Menu';
 import {observer} from 'mobx-react';
 import {observable} from 'mobx';
+
+
+const CustomTableCell = withStyles(theme => ({  
+  body: {
+    fontSize: 14,
+    backgroundColor: '#222',
+    color: '#fff',
+    rowspan:'4'
+  },
+}))(TableCell);
 
 const styles = theme => ({
   root: {
@@ -44,19 +56,20 @@ const styles = theme => ({
     backgroundColor: '#212121',
     color: '#fff',
   },
+  selectEmpty: {
+    padding: '15px',
+  },
 });
 
 @observer class TableExampleControlled extends Component {
-  @observable name='';
-  @observable price=0;
-  @observable quantity=0;
-
-  state = {
-    selected: [],
-  };
+  @observable name = '';
+  @observable price = 0;
+  @observable quantity = 0;
+  @observable type = '';
+  @observable selected = [];
 
   isSelected = index => {
-    return this.state.selected.indexOf (index) !== -1;
+    return this.selected.indexOf (index) !== -1;
   };
 
   handleRowSelection = selectedRows => {
@@ -68,24 +81,26 @@ const styles = theme => ({
   handleAddExpense = item => {
     this.props.list.addItem ({
       name: this.name,
-      price: parseInt(this.price,10),
-      quantity: parseInt(this.quantity,10),
-    });    
-    this.clear()
+      price: parseInt (this.price, 10),
+      quantity: parseInt (this.quantity, 10),
+      type: this.type,
+    });
+    this.clear ();
   };
 
+  handleChangeType = () => {};
+
   clear = () => {
-    this.name = ''
-    this.price = 0
-    this.quantity = 0
-  }  
+    this.name = '';
+    this.price = 0;
+    this.quantity = 0;
+  };
 
   render () {
     const {classes, list} = this.props;
     const l = [...list.items];
     return (
       <div className={classes.root}>
-
         <Grid container>
           <Grid item xs={12} sm={6}>
             <Table>
@@ -93,6 +108,7 @@ const styles = theme => ({
                 <TableRow>
                   <TableCell padding="dense">Sr.No</TableCell>
                   <TableCell padding="dense">Name</TableCell>
+                  <TableCell padding="dense">Type</TableCell>
                   <TableCell padding="dense">Quantity</TableCell>
                   <TableCell padding="dense">Total Price</TableCell>
                 </TableRow>
@@ -100,23 +116,38 @@ const styles = theme => ({
               <TableBody>
                 {l.map ((ele, id) => (
                   <TableRow selected={this.isSelected (0)} key={id}>
-                    <TableCell padding="dense">{id}</TableCell>
+                    <TableCell padding="dense">{id + 1}</TableCell>
                     <TableCell padding="dense">{ele.name}</TableCell>
-                    <TableCell padding="dense">{ele.quantity}</TableCell>
+                    <TableCell padding="dense">{ele.type}</TableCell>
                     <TableCell padding="dense">
-                      {ele.totalPrice}
-                      <Chip
-                        label={'Each ' + ele.price}
-                        className={classes.chip}
-                      />
+                      {ele.quantity ? ele.quantity : 'All'}
                     </TableCell>
+                    {ele.quantity
+                      ? <TableCell padding="dense">
+                          {ele.totalPrice}
+                          <Chip
+                            label={'Each ' + ele.price}
+                            className={classes.chip}
+                          />
+                        </TableCell>
+                      : <TableCell padding="dense">
+                          {ele.totalPrice}
+                          <Chip
+                            label={'All ' + ele.price}
+                            className={classes.chip}
+                          />
+                        </TableCell>}
                   </TableRow>
                 ))}
+                <TableRow>
+                  <CustomTableCell colSpan={4} style={{textAlign:'center'}}padding="dense">Total</CustomTableCell>                  
+                  <CustomTableCell padding="dense">{list.totalPrice}</CustomTableCell>
+                </TableRow>                
               </TableBody>
             </Table>
           </Grid>
         </Grid>
-        <Grid container spacing={24}>
+        <Grid container spacing={24} style={{paddingTop: 20}}>
           <Grid item xs={12}>
             <Grid
               container
@@ -141,6 +172,30 @@ const styles = theme => ({
                 />
               </Grid>
               <Grid item>
+                <InputLabel htmlFor="age-simple">Type</InputLabel>
+                <Select
+                  value={this.type}
+                  onChange={e => {
+                    this.type = e.target.value;
+                  }}
+                  inputProps={{
+                    name: 'age',
+                    id: 'age-simple',
+                  }}
+                  className={classes.selectEmpty}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Other">Other</MenuItem>
+                  <MenuItem value="Grocery">Grocery</MenuItem>
+                  <MenuItem value="Cloths">Cloths</MenuItem>
+                  <MenuItem value="Breakfast">Breakfast</MenuItem>
+                  <MenuItem value="Lunch">Lunch</MenuItem>
+                  <MenuItem value="Dinner">Dinner</MenuItem>
+                </Select>
+              </Grid>
+              <Grid item>
                 <TextField
                   id="number1"
                   label="Enter Cost"
@@ -156,7 +211,8 @@ const styles = theme => ({
                   margin="normal"
                 />
               </Grid>
-              <Grid item sm={2}>
+
+              <Grid item sm={2} lg={2} md={2}>
                 <TextField
                   id="numbe1r"
                   label="Quantity"
@@ -175,9 +231,10 @@ const styles = theme => ({
         </Grid>
         <Grid container justify="center">
           <Grid item>
-            <Button 
+            <Button
               className={classes.button}
-              variant="raised" size="small"
+              variant="raised"
+              size="small"
               onClick={this.handleAddExpense}
             >
               <Save

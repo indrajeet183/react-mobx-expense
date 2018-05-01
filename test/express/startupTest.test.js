@@ -23,8 +23,8 @@ test ('should response the GET method',done => {
     const res = request (app).get ('/expense');
     return res
       .then (json => {
-        console.log (json.body.length);
-        expect (json.body.length).toBe (1, done ());
+        console.log ("Length",json.body.length);
+        expect (json.body.length).toBe (1, done);
       })
       .catch (err => {});
   },10000);

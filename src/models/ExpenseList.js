@@ -8,6 +8,7 @@ export const Expense = types.model({
     name:types.string,
     price:types.number,
     quantity:types.number,    
+    type:types.string
 }).actions(self => ({
     changeName(newName) {
         self.name = newName
@@ -18,9 +19,12 @@ export const Expense = types.model({
     changeQuantity(newQuant) {
         self.quantity = newQuant
     },
+    changeType(newType) {
+        self.type = newType
+    },
 })).views(self => ({
     get totalPrice () {
-        return self.price * self.quantity
+        return self.quantity?self.price * self.quantity:self.price
     }
 }))
 
@@ -48,6 +52,6 @@ export const DailyExpense = types.model({
     }
 })).views(self => ({
     get totalPrice () {
-        return self.items.reduce((sum,entry) => sum+(entry.price * entry.quantity),0)
+        return self.items.reduce((sum,entry) => sum+(entry.price * (entry.quantity?entry.quantity:1)),0)
     }
 }))

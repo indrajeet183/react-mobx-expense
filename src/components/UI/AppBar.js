@@ -1,4 +1,8 @@
 import React from 'react';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
+import './react_dates_overrides.css'
+
 import PropTypes from 'prop-types';
 import {withStyles} from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
@@ -8,6 +12,11 @@ import IconButton from 'material-ui/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Menu, {MenuItem} from 'material-ui/Menu';
+import { SingleDatePicker } from 'react-dates';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
+import * as Moment from 'moment';
+
 
 const styles = {
   root: {
@@ -25,11 +34,12 @@ const styles = {
   },
 };
 
+@observer
 class MenuAppBar extends React.Component {
+  @observable date = Moment()
   state = {
     auth: true,
     anchorEl: null,
-    date: new Date ().toLocaleDateString (),
   };
 
   handleChange = (event, checked) => {
@@ -68,13 +78,18 @@ class MenuAppBar extends React.Component {
             >
               Title
             </Typography>
-            <Typography
-              variant="title"
-              color="inherit"
-              className={classes.flex}
+            <div              
+              className={classes.flex}                   
             >
-              {this.state.date}
-            </Typography>
+              <SingleDatePicker 
+                date={this.date} // momentPropTypes.momentObj or null
+                onDateChange={date => {this.date = date}} // PropTypes.func.isRequired
+                focused={this.state.focused} // PropTypes.bool
+                onFocusChange={({ focused }) => this.setState({ focused })} // PropTypes.func.isRequired
+                numberOfMonths={1}
+                isOutsideRange={() => false}                
+              />
+            </div>
             {auth &&
               <div>
                 <IconButton

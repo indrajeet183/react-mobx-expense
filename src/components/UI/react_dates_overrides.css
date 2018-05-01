@@ -1,0 +1,18 @@
+.SingleDatePickerInput__withBorder {
+    border: none;
+}
+
+.DateInput_input {
+    background-color: #222;
+    color:#fff
+}
+
+.CalendarDay__selected, .CalendarDay__selected:active, .CalendarDay__selected:hover {
+    background: #222;
+    border: 1px solid #777;
+    color: #fff;
+}
+
+.DayPickerKeyboardShortcuts_show__bottomRight {
+    border-right: 33px solid #222;
+}

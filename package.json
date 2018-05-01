@@ -33,6 +33,7 @@
     "mobx": "^4.2.0",
     "mobx-react": "^5.0.0",
     "mobx-state-tree": "^2.0.4",
+    "moment": "^2.22.1",
     "mongodb": "^3.0.7",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
@@ -40,6 +41,7 @@
     "promise": "8.0.1",
     "raf": "3.4.0",
     "react": "^16.3.2",
+    "react-dates": "^16.6.1",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.3.2",
     "resolve": "1.6.0",
@@ -54,7 +56,7 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node scripts/start.js",
     "build": "CI=false node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "postinstall": "CI=false node scripts/build.js"
