@@ -1,0 +1,77 @@
+.paper {    
+    transition: all 0.3s ease-in-out;    
+    position: relative;
+    cursor: pointer;
+}
+
+.paper:hover{
+    transform: scale(1.2);
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;    
+    backface-visibility: hidden;    
+}
+
+.paper:active {
+    transform: scale(1);
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;    
+    backface-visibility: hidden;    
+}
+
+.paper:hover >.icon {
+    font-size: 3.5rem !important;
+    padding: 1rem;
+    background-image: linear-gradient(to top right, #222, #777);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.icon {
+    font-size: 3.5rem !important;
+    padding: 1rem;
+    /* background-image: linear-gradient(to top right, #222, #777); */
+    background: #222;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.iconText {
+    position: absolute;
+    font-size: 1rem;
+    top: 90%;
+    left: 50%;    
+    display: none;
+    transform: translate(0%,-50%);
+    color:#222;
+    font-weight: 600;
+    transition: all 0.1s ease-in-out;    
+}
+
+.paper:hover > .iconText {
+    display: block;
+    animation: bottomToTop .2s linear;
+    top: 50%;
+    left: 50%;
+    transition: all 0.1s ease-in-out;    
+}
+
+@keyframes bottomToTop {
+    0% {
+        top: 90%;
+    }
+    20% {
+        top: 80%;
+    }
+    30% {
+        top: 70%;
+    }        
+    50% {
+        top:65%;
+    }
+    70%{
+        top:60;
+    }
+    100% {
+        top:50%;
+    }
+}

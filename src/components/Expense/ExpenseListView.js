@@ -8,17 +8,16 @@ import {
   TableRow,
   TableCell,
 } from 'material-ui/Table';
+import Icon from 'material-ui/Icon';
 import {withStyles} from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
-import TextField from 'material-ui/TextField';
-import classNames from 'classnames';
 import Button from 'material-ui/Button';
-import Save from '@material-ui/icons/Save';
-import Select from 'material-ui/Select';
-import Input, {InputLabel} from 'material-ui/Input';
-import {MenuItem} from 'material-ui/Menu';
 import {observer} from 'mobx-react';
 import {observable} from 'mobx';
+import Modal from '../UI/Modal';
+import Paper from 'material-ui/Paper';
+import Typography from 'material-ui/Typography';
+import cls from './Modal.css'
 
 
 const CustomTableCell = withStyles(theme => ({  
@@ -34,13 +33,18 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
   },
-  paper: {
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
+  paper: {    
+    padding: theme.spacing.unit * 2,    
+    fontSize:'3.5rem',        
   },
   button: {
     margin: theme.spacing.unit,
+  },
+  buttonAdd: {
+    margin: theme.spacing.unit,
+    backgroundColor:'#f7f7f7f7',
+    color:'#222',
+    minWidth:'25px'
   },
   leftIcon: {
     marginRight: theme.spacing.unit,
@@ -106,7 +110,8 @@ const styles = theme => ({
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell padding="dense">Sr.No</TableCell>
+                  <TableCell padding="dense">Sr.No                  
+                  </TableCell>
                   <TableCell padding="dense">Name</TableCell>
                   <TableCell padding="dense">Type</TableCell>
                   <TableCell padding="dense">Quantity</TableCell>
@@ -139,110 +144,46 @@ const styles = theme => ({
                         </TableCell>}
                   </TableRow>
                 ))}
-                <TableRow>
-                  <CustomTableCell colSpan={4} style={{textAlign:'center'}}padding="dense">Total</CustomTableCell>                  
+                <TableRow>                
+                  <CustomTableCell colSpan={4} style={{textAlign:'center'}}padding="dense"><Button variant="raised" className={classes.buttonAdd}>+</Button> Total</CustomTableCell>                  
                   <CustomTableCell padding="dense">{list.totalPrice}</CustomTableCell>
                 </TableRow>                
               </TableBody>
             </Table>
           </Grid>
+        </Grid>        
+        {/* <Modal list={list} open={true}/> */}
+        <Grid container justify="center" spacing={40} style={{width:'100%',paddingTop:'2%'}}  align="left">
+        <Grid item lg={2} >
+        <Paper elevation={2} className={cls.paper}>        
+          <Icon className={cls.icon}>restaurant</Icon> 
+          <span className={cls.iconText}>Food</span>
+        </Paper>
         </Grid>
-        <Grid container spacing={24} style={{paddingTop: 20}}>
-          <Grid item xs={12}>
-            <Grid
-              container
-              className={classes.demo}
-              justify="center"
-              spacing={40}
-            >
-              <Grid item>
-                <TextField
-                  id="number"
-                  label="Enter Name"
-                  value={this.name}
-                  onChange={e => {
-                    this.name = e.target.value;
-                  }}
-                  type="text"
-                  className={classes.textField}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item>
-                <InputLabel htmlFor="age-simple">Type</InputLabel>
-                <Select
-                  value={this.type}
-                  onChange={e => {
-                    this.type = e.target.value;
-                  }}
-                  inputProps={{
-                    name: 'age',
-                    id: 'age-simple',
-                  }}
-                  className={classes.selectEmpty}
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value="Other">Other</MenuItem>
-                  <MenuItem value="Grocery">Grocery</MenuItem>
-                  <MenuItem value="Cloths">Cloths</MenuItem>
-                  <MenuItem value="Breakfast">Breakfast</MenuItem>
-                  <MenuItem value="Lunch">Lunch</MenuItem>
-                  <MenuItem value="Dinner">Dinner</MenuItem>
-                </Select>
-              </Grid>
-              <Grid item>
-                <TextField
-                  id="number1"
-                  label="Enter Cost"
-                  value={this.price}
-                  onChange={e => {
-                    this.price = e.target.value;
-                  }}
-                  type="number"
-                  className={classes.textField}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  margin="normal"
-                />
-              </Grid>
-
-              <Grid item sm={2} lg={2} md={2}>
-                <TextField
-                  id="numbe1r"
-                  label="Quantity"
-                  value={this.quantity}
-                  onChange={e => (this.quantity = e.target.value)}
-                  type="number"
-                  className={classes.textField}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  margin="normal"
-                />
-              </Grid>
-            </Grid>
-          </Grid>
+        <Grid item lg={2}>
+        <Paper elevation={2} className={cls.paper}>          
+          <Icon className={cls.icon}>local_grocery_store</Icon>
+          <span className={cls.iconText}>Grocery</span>
+        </Paper>
         </Grid>
-        <Grid container justify="center">
-          <Grid item>
-            <Button
-              className={classes.button}
-              variant="raised"
-              size="small"
-              onClick={this.handleAddExpense}
-            >
-              <Save
-                className={classNames (classes.leftIcon, classes.iconSmall)}
-              />
-              Add
-            </Button>
-          </Grid>
+        <Grid item lg={2}>
+        <Paper elevation={2} className={cls.paper}>          
+          <Icon className={cls.icon}>local_taxi</Icon>
+          <span className={cls.iconText}>Transport</span>
+        </Paper>
+        </Grid>
+        <Grid item lg={2}>
+        <Paper elevation={2} className={cls.paper}>          
+          <Icon className={cls.icon}>local_gas_station</Icon>
+          <span className={cls.iconText}>Fuel</span>
+        </Paper>
+        </Grid>
+        <Grid item lg={2}>
+        <Paper elevation={2} className={cls.paper}>
+          <Icon className={cls.icon}>add_box</Icon>
+          <span className={cls.iconText}>Other</span>
+        </Paper>
+        </Grid>
         </Grid>
       </div>
     );
