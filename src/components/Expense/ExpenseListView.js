@@ -14,37 +14,45 @@ import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 import {observer} from 'mobx-react';
 import {observable} from 'mobx';
-import Modal from '../UI/Modal';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
-import cls from './Modal.css'
+import cls from './Modal.css';
+import InputPopover from '../UI/InputPopover';
+import Popover from 'material-ui/Popover';
 
-
-const CustomTableCell = withStyles(theme => ({  
+const CustomTableCell = withStyles (theme => ({
   body: {
     fontSize: 14,
     backgroundColor: '#222',
     color: '#fff',
-    rowspan:'4'
+    rowspan: '4',
   },
-}))(TableCell);
+})) (TableCell);
+
+const CustomTableRow = withStyles (theme => ({
+  root: {
+    backgroundColor: '#fff',
+    borderRadius: '2px',
+    boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)'
+  },
+})) (TableRow);
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
   },
-  paper: {    
-    padding: theme.spacing.unit * 2,    
-    fontSize:'3.5rem',        
+  paper: {
+    padding: theme.spacing.unit * 2,
+    fontSize: '3.5rem',
   },
   button: {
     margin: theme.spacing.unit,
   },
   buttonAdd: {
     margin: theme.spacing.unit,
-    backgroundColor:'#f7f7f7f7',
-    color:'#222',
-    minWidth:'25px'
+    backgroundColor: '#f7f7f7f7',
+    color: '#222',
+    minWidth: '25px',
   },
   leftIcon: {
     marginRight: theme.spacing.unit,
@@ -63,6 +71,9 @@ const styles = theme => ({
   selectEmpty: {
     padding: '15px',
   },
+  typography: {
+    margin: theme.spacing.unit * 2,
+  },
 });
 
 @observer class TableExampleControlled extends Component {
@@ -71,6 +82,7 @@ const styles = theme => ({
   @observable quantity = 0;
   @observable type = '';
   @observable selected = [];
+  @observable anchorEl = null;
 
   isSelected = index => {
     return this.selected.indexOf (index) !== -1;
@@ -92,7 +104,14 @@ const styles = theme => ({
     this.clear ();
   };
 
-  handleChangeType = () => {};
+  handleClick = (event,type) => {
+    this.type = type;
+    this.anchorEl = event.currentTarget;
+  };
+
+  handleClose = () => {
+    this.anchorEl = null;
+  };
 
   clear = () => {
     this.name = '';
@@ -104,23 +123,25 @@ const styles = theme => ({
     const {classes, list} = this.props;
     const l = [...list.items];
     return (
-      <div className={classes.root}>
-        <Grid container>
-          <Grid item xs={12} sm={6}>
+      <div className={classes.root}>      
+        <Grid container justify='center' style={{paddingTop:'2rem'}}>
+          <Grid item xs={12} sm={6}>          
+          <Paper>
             <Table>
               <TableHead>
-                <TableRow>
-                  <TableCell padding="dense">Sr.No                  
-                  </TableCell>
+                <CustomTableRow>
+                  <CustomTableCell padding="dense">
+                    Sr.No{' '}
+                  </CustomTableCell>
                   <TableCell padding="dense">Name</TableCell>
                   <TableCell padding="dense">Type</TableCell>
                   <TableCell padding="dense">Quantity</TableCell>
                   <TableCell padding="dense">Total Price</TableCell>
-                </TableRow>
+                </CustomTableRow>
               </TableHead>
               <TableBody>
                 {l.map ((ele, id) => (
-                  <TableRow selected={this.isSelected (0)} key={id}>
+                  <CustomTableRow selected={this.isSelected (0)} key={id} className={cls['table-row']}>
                     <TableCell padding="dense">{id + 1}</TableCell>
                     <TableCell padding="dense">{ele.name}</TableCell>
                     <TableCell padding="dense">{ele.type}</TableCell>
@@ -142,48 +163,74 @@ const styles = theme => ({
                             className={classes.chip}
                           />
                         </TableCell>}
-                  </TableRow>
+                  </CustomTableRow>
                 ))}
-                <TableRow>                
-                  <CustomTableCell colSpan={4} style={{textAlign:'center'}}padding="dense"><Button variant="raised" className={classes.buttonAdd}>+</Button> Total</CustomTableCell>                  
-                  <CustomTableCell padding="dense">{list.totalPrice}</CustomTableCell>
-                </TableRow>                
+                <CustomTableRow>
+                  <CustomTableCell
+                    colSpan={4}
+                    style={{textAlign: 'center'}}
+                    padding="dense"
+                  >                    
+                    {' '}
+                    Total
+                  </CustomTableCell>
+                  <CustomTableCell padding="dense">
+                    {list.totalPrice}
+                  </CustomTableCell>
+                </CustomTableRow>
               </TableBody>
             </Table>
+            </Paper>
           </Grid>
-        </Grid>        
-        {/* <Modal list={list} open={true}/> */}
-        <Grid container justify="center" spacing={40} style={{width:'100%',paddingTop:'2%'}}  align="left">
-        <Grid item lg={2} >
-        <Paper elevation={2} className={cls.paper}>        
-          <Icon className={cls.icon}>restaurant</Icon> 
-          <span className={cls.iconText}>Food</span>
-        </Paper>
         </Grid>
-        <Grid item lg={2}>
-        <Paper elevation={2} className={cls.paper}>          
-          <Icon className={cls.icon}>local_grocery_store</Icon>
-          <span className={cls.iconText}>Grocery</span>
-        </Paper>
-        </Grid>
-        <Grid item lg={2}>
-        <Paper elevation={2} className={cls.paper}>          
-          <Icon className={cls.icon}>local_taxi</Icon>
-          <span className={cls.iconText}>Transport</span>
-        </Paper>
-        </Grid>
-        <Grid item lg={2}>
-        <Paper elevation={2} className={cls.paper}>          
-          <Icon className={cls.icon}>local_gas_station</Icon>
-          <span className={cls.iconText}>Fuel</span>
-        </Paper>
-        </Grid>
-        <Grid item lg={2}>
-        <Paper elevation={2} className={cls.paper}>
-          <Icon className={cls.icon}>add_box</Icon>
-          <span className={cls.iconText}>Other</span>
-        </Paper>
-        </Grid>
+        <div>
+          <InputPopover anchorEl={this.anchorEl} close={this.handleClose} type={this.type} />
+        </div>
+        <Grid
+          container
+          justify="center"
+          spacing={40}
+          style={{width: '100%', paddingTop: '2%'}}
+          align="left"
+        >
+          <Grid item lg={2}>
+            <Paper
+              elevation={2}
+              className={cls.paper}
+              onClick={(e) => {this.handleClick(e,'food')}}
+            >
+              <Icon className={cls.icon}>restaurant</Icon>
+              <span className={cls.iconText}>Food</span>
+            </Paper>
+          </Grid>
+          <Grid item lg={2}>
+            <Paper
+              elevation={2}
+              className={cls.paper}
+              onClick={this.handleClick}
+            >
+              <Icon className={cls.icon}>local_grocery_store</Icon>
+              <span className={cls.iconText}>Grocery</span>
+            </Paper>
+          </Grid>
+          <Grid item lg={2}>
+            <Paper elevation={2} className={cls.paper}>
+              <Icon className={cls.icon}>local_taxi</Icon>
+              <span className={cls.iconText}>Transport</span>
+            </Paper>
+          </Grid>
+          <Grid item lg={2}>
+            <Paper elevation={2} className={cls.paper}>
+              <Icon className={cls.icon}>local_gas_station</Icon>
+              <span className={cls.iconText}>Fuel</span>
+            </Paper>
+          </Grid>
+          <Grid item lg={2}>
+            <Paper elevation={2} className={cls.paper}>
+              <Icon className={cls.icon}>add_box</Icon>
+              <span className={cls.iconText}>Other</span>
+            </Paper>
+          </Grid>
         </Grid>
       </div>
     );
