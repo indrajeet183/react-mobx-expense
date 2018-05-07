@@ -25,47 +25,21 @@ class ExpenseTypeBtn extends Component {
           spacing={40}
           style={{width: '100%', paddingTop: '2%'}}
           align="left"
-        >{this.types.forEach((type) => {
-            
-        }}
-          <Grid item lg={2}>
+        >
+        {this.types.map((ele,index) => {
+          return (
+            <Grid item lg={2} key={ele.name+index}>
             <Paper
               elevation={2}
               className={cls.paper}
-              onClick={(e) => {this.props.clicked(e,'food')}}
+              onClick={(e) => {this.props.clicked(e,ele.name)}}
             >
-              <Icon className={cls.icon}>restaurant</Icon>
-              <span className={cls.iconText}>Food</span>
+              <Icon className={cls.icon}>{ele.icon}</Icon>
+              <span className={cls.iconText}>{ele.name}</span>
             </Paper>
           </Grid>
-          <Grid item lg={2}>
-            <Paper
-              elevation={2}
-              className={cls.paper}
-              onClick={this.handleClick}
-            >
-              <Icon className={cls.icon}>local_grocery_store</Icon>
-              <span className={cls.iconText}>Grocery</span>
-            </Paper>
-          </Grid>
-          <Grid item lg={2}>
-            <Paper elevation={2} className={cls.paper}>
-              <Icon className={cls.icon}>local_taxi</Icon>
-              <span className={cls.iconText}>Transport</span>
-            </Paper>
-          </Grid>
-          <Grid item lg={2}>
-            <Paper elevation={2} className={cls.paper}>
-              <Icon className={cls.icon}>local_gas_station</Icon>
-              <span className={cls.iconText}>Fuel</span>
-            </Paper>
-          </Grid>
-          <Grid item lg={2}>
-            <Paper elevation={2} className={cls.paper}>
-              <Icon className={cls.icon}>add_box</Icon>
-              <span className={cls.iconText}>Other</span>
-            </Paper>
-          </Grid>
+          )
+        })}          
         </Grid>
         )
     }

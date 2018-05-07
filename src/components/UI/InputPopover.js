@@ -42,10 +42,11 @@ const styles = theme => ({
       name: this.name,
       price: parseInt (this.price, 10),
       quantity: parseInt (this.quantity, 10),
-      type: this.type,
+      type: this.props.type,
     });
     this.clear ();
   };
+  
 
   clear = () => {
     this.name = '';
@@ -112,7 +113,9 @@ const styles = theme => ({
             />
           </Grid>
           <Grid item>
-            <Button style={{width:'10%',height:'100%',background: 'linear-gradient(to top right,rgba(66,214,235,0.8),rgba(223,244,66,0.8))',color:'#f7f7f7',fontSize:'2rem'}}>
+            <Button style={{width:'10%',height:'100%',background: 'linear-gradient(to top right,rgba(66,214,235,0.8),rgba(223,244,66,0.8))',color:'#f7f7f7',fontSize:'2rem',borderRadius:'3px'}}
+              onClick={this.handleAddExpense}
+            >
               <span>+</span>
             </Button>
           </Grid>

@@ -19,6 +19,7 @@ import Typography from 'material-ui/Typography';
 import cls from './Modal.css';
 import InputPopover from '../UI/InputPopover';
 import Popover from 'material-ui/Popover';
+import ExpenseTypeBtn from './ExpenseTypeBtn';
 
 const CustomTableCell = withStyles (theme => ({
   body: {
@@ -178,60 +179,20 @@ const styles = theme => ({
                     {list.totalPrice}
                   </CustomTableCell>
                 </CustomTableRow>
-              </TableBody>
+              </TableBody>            
             </Table>
             </Paper>
           </Grid>
         </Grid>
         <div>
-          <InputPopover anchorEl={this.anchorEl} close={this.handleClose} type={this.type} />
+          <InputPopover 
+            anchorEl={this.anchorEl}
+            close={this.handleClose} 
+            type={this.type} 
+            list={list}
+            />
         </div>
-        <Grid
-          container
-          justify="center"
-          spacing={40}
-          style={{width: '100%', paddingTop: '2%'}}
-          align="left"
-        >
-          <Grid item lg={2}>
-            <Paper
-              elevation={2}
-              className={cls.paper}
-              onClick={(e) => {this.handleClick(e,'food')}}
-            >
-              <Icon className={cls.icon}>restaurant</Icon>
-              <span className={cls.iconText}>Food</span>
-            </Paper>
-          </Grid>
-          <Grid item lg={2}>
-            <Paper
-              elevation={2}
-              className={cls.paper}
-              onClick={this.handleClick}
-            >
-              <Icon className={cls.icon}>local_grocery_store</Icon>
-              <span className={cls.iconText}>Grocery</span>
-            </Paper>
-          </Grid>
-          <Grid item lg={2}>
-            <Paper elevation={2} className={cls.paper}>
-              <Icon className={cls.icon}>local_taxi</Icon>
-              <span className={cls.iconText}>Transport</span>
-            </Paper>
-          </Grid>
-          <Grid item lg={2}>
-            <Paper elevation={2} className={cls.paper}>
-              <Icon className={cls.icon}>local_gas_station</Icon>
-              <span className={cls.iconText}>Fuel</span>
-            </Paper>
-          </Grid>
-          <Grid item lg={2}>
-            <Paper elevation={2} className={cls.paper}>
-              <Icon className={cls.icon}>add_box</Icon>
-              <span className={cls.iconText}>Other</span>
-            </Paper>
-          </Grid>
-        </Grid>
+        <ExpenseTypeBtn clicked={this.handleClick}/>        
       </div>
     );
   }
