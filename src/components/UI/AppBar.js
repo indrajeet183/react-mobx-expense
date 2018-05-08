@@ -15,7 +15,8 @@ import Menu, {MenuItem} from 'material-ui/Menu';
 import { SingleDatePicker } from 'react-dates';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import * as Moment from 'moment';
+import moment from 'moment';
+
 
 
 const styles = {
@@ -36,7 +37,7 @@ const styles = {
 
 @observer
 class MenuAppBar extends React.Component {
-  @observable date = Moment()
+  @observable date = moment()
   state = {
     auth: true,
     anchorEl: null,
