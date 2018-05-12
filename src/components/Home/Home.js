@@ -14,7 +14,7 @@ let list = DailyExpense.create({
 const home = () => {
   return (
     <div>
-     <AppBar/>      
+     <AppBar/>     
      <ExpenseListView list={list}/>
     </div>
   );

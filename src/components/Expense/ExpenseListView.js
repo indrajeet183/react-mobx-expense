@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 
-import Chip from 'material-ui/Chip';
 import {
   default as Table,
   TableBody,
@@ -8,18 +7,12 @@ import {
   TableRow,
   TableCell,
 } from 'material-ui/Table';
-import Icon from 'material-ui/Icon';
 import {withStyles} from 'material-ui/styles';
-import Grid from 'material-ui/Grid';
-import Button from 'material-ui/Button';
 import {observer} from 'mobx-react';
 import {observable} from 'mobx';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import cls from './Modal.css';
 import InputPopover from '../UI/InputPopover';
-import Popover from 'material-ui/Popover';
 import ExpenseTypeBtn from './ExpenseTypeBtn';
+import ExpenseTable  from '../Expense/ExpenseTable';
 
 const CustomTableCell = withStyles (theme => ({
   body: {
@@ -41,6 +34,7 @@ const CustomTableRow = withStyles (theme => ({
 const styles = theme => ({
   root: {
     flexGrow: 1,
+    padding:'1rem'
   },
   paper: {
     padding: theme.spacing.unit * 2,
@@ -125,65 +119,8 @@ const styles = theme => ({
     const l = [...list.items];
     return (
       <div className={classes.root}>      
-        <Grid container justify='center' style={{paddingTop:'2rem'}}>
-          <Grid item xs={12} sm={6}>          
-          <Paper>
-            <Table>
-              <TableHead>
-                <CustomTableRow>
-                  <CustomTableCell padding="dense">
-                    Sr.No{' '}
-                  </CustomTableCell>
-                  <TableCell padding="dense">Name</TableCell>
-                  <TableCell padding="dense">Type</TableCell>
-                  <TableCell padding="dense">Quantity</TableCell>
-                  <TableCell padding="dense">Total Price</TableCell>
-                </CustomTableRow>
-              </TableHead>
-              <TableBody>
-                {l.map ((ele, id) => (
-                  <CustomTableRow selected={this.isSelected (0)} key={id} className={cls['table-row']}>
-                    <TableCell padding="dense">{id + 1}</TableCell>
-                    <TableCell padding="dense">{ele.name}</TableCell>
-                    <TableCell padding="dense">{ele.type}</TableCell>
-                    <TableCell padding="dense">
-                      {ele.quantity ? ele.quantity : 'All'}
-                    </TableCell>
-                    {ele.quantity
-                      ? <TableCell padding="dense">
-                          {ele.totalPrice}
-                          <Chip
-                            label={'Each ' + ele.price}
-                            className={classes.chip}
-                          />
-                        </TableCell>
-                      : <TableCell padding="dense">
-                          {ele.totalPrice}
-                          <Chip
-                            label={'All ' + ele.price}
-                            className={classes.chip}
-                          />
-                        </TableCell>}
-                  </CustomTableRow>
-                ))}
-                <CustomTableRow>
-                  <CustomTableCell
-                    colSpan={4}
-                    style={{textAlign: 'center'}}
-                    padding="dense"
-                  >                    
-                    {' '}
-                    Total
-                  </CustomTableCell>
-                  <CustomTableCell padding="dense">
-                    {list.totalPrice}
-                  </CustomTableCell>
-                </CustomTableRow>
-              </TableBody>            
-            </Table>
-            </Paper>
-          </Grid>
-        </Grid>
+      <ExpenseTypeBtn clicked={this.handleClick}/>        
+        <ExpenseTable />
         <div>
           <InputPopover 
             anchorEl={this.anchorEl}
@@ -191,8 +128,7 @@ const styles = theme => ({
             type={this.type} 
             list={list}
             />
-        </div>
-        <ExpenseTypeBtn clicked={this.handleClick}/>        
+        </div>        
       </div>
     );
   }

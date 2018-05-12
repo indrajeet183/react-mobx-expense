@@ -28,6 +28,40 @@ const styles = theme => ({
     marginRight: theme.spacing.unit,
     width: 150,
   },
+  bootstrapRoot: {
+    padding: 0,
+    'label + &': {
+      marginTop: theme.spacing.unit * 3,
+    },
+  },
+  bootstrapInput: {
+    borderRadius: 4,
+    backgroundColor: theme.palette.common.white,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '10px 12px',
+    width: 'calc(100% - 24px)',
+    transition: theme.transitions.create (['border-color', 'box-shadow']),
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join (','),
+    '&:focus': {
+      borderColor: '#80bdff',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+    },
+  },
+  bootstrapFormLabel: {
+    fontSize: 18,
+  },
 });
 
 @observer class InputPopover extends Component {
@@ -46,7 +80,6 @@ const styles = theme => ({
     });
     this.clear ();
   };
-  
 
   clear = () => {
     this.name = '';
@@ -69,9 +102,9 @@ const styles = theme => ({
           vertical: 'top',
           horizontal: 'center',
         }}
-        style={{margin:'10px'}}
+        style={{margin: '10px'}}
       >
-        <Grid container spacing={12}>
+        <Grid container spacing={12} style={{display:'block'}}>
           <Grid item>
             <TextField
               id="name"
@@ -80,7 +113,7 @@ const styles = theme => ({
               value={this.name}
               onChange={e => (this.name = e.target.value)}
               margin="normal"
-            />
+            />            
           </Grid>
           <Grid item>
             <TextField
@@ -113,7 +146,15 @@ const styles = theme => ({
             />
           </Grid>
           <Grid item>
-            <Button style={{width:'10%',height:'100%',background: 'linear-gradient(to top right,rgba(66,214,235,0.8),rgba(223,244,66,0.8))',color:'#f7f7f7',fontSize:'2rem',borderRadius:'3px'}}
+            <Button
+              style={{
+                width: '100%',
+                height: '100%',
+                background: 'linear-gradient(to top right,rgba(66,214,235,0.8),rgba(223,244,66,0.8))',
+                color: '#f7f7f7',
+                fontSize: '2rem',
+                borderRadius: '3px',
+              }}
               onClick={this.handleAddExpense}
             >
               <span>+</span>
