@@ -4,7 +4,6 @@ const db = require ('../../db.js');
 const url = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017'
 
 beforeAll (done => {
-  console.log(url)
   db.connect (url, err => {
     if (err) {
       console.log ('Unable to connect', err);
