@@ -1,7 +1,7 @@
 const request = require ('supertest');
 const app = require ('../../app');
 const db = require ('../../db.js');
-const url = process.env.MONGO_URI || 'mongodb://localhost:27017'
+const url = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017'
 
 beforeAll (done => {
   console.log(url)
