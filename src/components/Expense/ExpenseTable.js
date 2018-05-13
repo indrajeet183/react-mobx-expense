@@ -21,14 +21,15 @@ import Tooltip from 'material-ui/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import cls from './Modal.css';
-import { inject } from 'mobx-react';
+import {inject} from 'mobx-react';
 import {observer} from 'mobx-react';
-import { observable } from 'mobx';
+import {observable} from 'mobx';
+import LineChart from '../UI/Chart/LineChart';
 
 let counter = 0;
-function createData (no, name, type, quantity, totalPrice,price) {
+function createData (no, name, type, quantity, totalPrice, price) {
   counter += 1;
-  return {id: counter, no, name, type, quantity, totalPrice,price};
+  return {id: counter, no, name, type, quantity, totalPrice, price};
 }
 
 const CustomTableCell = withStyles (theme => ({
@@ -131,7 +132,7 @@ const toolbarStyles = theme => ({
   },
   highlight: {
     color: '#f7f7f7',
-    backgroundColor: '#222'
+    backgroundColor: '#222',
   },
 
   spacer: {
@@ -167,7 +168,7 @@ let EnhancedTableToolbar = props => {
       <div className={classes.actions}>
         {numSelected > 0
           ? <Tooltip title="Delete">
-              <IconButton aria-label="Delete" style={{color:'#f7f7f7'}}>
+              <IconButton aria-label="Delete" style={{color: '#f7f7f7'}}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
@@ -206,15 +207,15 @@ const styles = theme => ({
   },
 });
 
-@inject("expenseStore")
-@observer class EnhancedTable extends React.Component {
-  @observable order = 'asc'
-  @observable orderBy = 'name'
-  @observable selected = []
-  @observable data = []
-  @observable page = 0
-  @observable rowsPerPage = 5
-  
+@inject ('expenseStore')
+@observer
+class EnhancedTable extends React.Component {
+  @observable order = 'asc';
+  @observable orderBy = 'name';
+  @observable selected = [];
+  @observable data = [];
+  @observable page = 0;
+  @observable rowsPerPage = 5;
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -228,17 +229,17 @@ const styles = theme => ({
       ? this.data.sort ((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
       : this.data.sort ((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
-    this.data = data
-    this.order = order
-    this.orderBy = orderBy    
+    this.data = data;
+    this.order = order;
+    this.orderBy = orderBy;
   };
 
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.selected =  this.data.map (n => n.id);
+      this.selected = this.data.map (n => n.id);
       return;
     }
-    this.selected = []
+    this.selected = [];
   };
 
   handleClick = (event, id) => {
@@ -258,29 +259,35 @@ const styles = theme => ({
       );
     }
 
-    this.selected = newSelected
+    this.selected = newSelected;
   };
 
   handleChangePage = (event, page) => {
-    this.page = page
+    this.page = page;
   };
 
   handleChangeRowsPerPage = event => {
-    this.rowsPerPage = event.target.value
+    this.rowsPerPage = event.target.value;
   };
 
   isSelected = id => this.selected.indexOf (id) !== -1;
 
   render () {
-    const {classes, expenseStore} = this.props;    
-    const data1 = expenseStore.items.map((ele,index) => {
-      return createData(index+1,ele.name,ele.type,ele.quantity,ele.totalPrice,ele.price)
-    })    
-    console.log(data1)
-
+    const {classes, expenseStore} = this.props;
+    const data1 = expenseStore.items.map ((ele, index) => {
+      return createData (
+        index + 1,
+        ele.name,
+        ele.type,
+        ele.quantity,
+        ele.totalPrice,
+        ele.price
+      );
+    });
+    console.log (data1);
 
     return (
-      <Grid container style={{paddingLeft: '2rem'}}>
+      <Grid container style={{paddingLeft: '2rem'}} spacing={24}>
         <Grid item xs={12} sm={6}>
           <Paper className={classes.root}>
             <EnhancedTableToolbar numSelected={this.selected.length} />
@@ -296,7 +303,10 @@ const styles = theme => ({
               />
               <TableBody>
                 {data1
-                  .slice (this.page * this.rowsPerPage, this.page * this.rowsPerPage + this.rowsPerPage)
+                  .slice (
+                    this.page * this.rowsPerPage,
+                    this.page * this.rowsPerPage + this.rowsPerPage
+                  )
                   .map (n => {
                     const isSelected = this.isSelected (n.id);
                     return (
@@ -321,11 +331,19 @@ const styles = theme => ({
                         </TableCell>
                         <TableCell style={{padding: '0'}}>
                           {n.totalPrice}
-                          {n.quantity?<Chip label={'Each ' + n.price} className={classes.chip} />:<Chip label={'All ' + n.price} className={classes.chip} />}
+                          {n.quantity
+                            ? <Chip
+                                label={'Each ' + n.price}
+                                className={classes.chip}
+                              />
+                            : <Chip
+                                label={'All ' + n.price}
+                                className={classes.chip}
+                              />}
                         </TableCell>
                       </TableRow>
                     );
-                  })}                
+                  })}
                 <CustomTableRow>
                   <CustomTableCell
                     colSpan={5}
@@ -356,6 +374,11 @@ const styles = theme => ({
               onChangePage={this.handleChangePage}
               onChangeRowsPerPage={this.handleChangeRowsPerPage}
             />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={5}>
+          <Paper className={classes.root}>
+            <LineChart />
           </Paper>
         </Grid>
       </Grid>

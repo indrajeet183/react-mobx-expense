@@ -84,7 +84,7 @@ const styles = theme => ({
     return (
       <div className={classes.root}>      
       <ExpenseTypeBtn clicked={this.handleClick}/>        
-        <ExpenseTable />        
+        <ExpenseTable />         
           <InputPopover 
             anchorEl={this.anchorEl}
             close={this.handleClose} 
