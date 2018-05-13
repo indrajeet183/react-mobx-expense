@@ -4,12 +4,13 @@ const db = require ('../../db.js');
 const url = process.env.MONGO_URI || 'mongodb://localhost:27017'
 
 beforeAll (done => {
+  console.log(url)
   db.connect (url, err => {
     if (err) {
-      //console.log ('Unable to connect', err);
+      console.log ('Unable to connect', err);
       process.exit (1);
     }else{
-        //console.log('Succesfully connected')
+        console.log('Succesfully connected')
         done();
     }
   });
