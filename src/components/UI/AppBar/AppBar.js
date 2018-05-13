@@ -16,6 +16,7 @@ import { SingleDatePicker } from 'react-dates';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import moment from 'moment';
+import * as cls from './AppBar.css';
 
 
 
@@ -32,6 +33,7 @@ const styles = {
   },
   appBar: {
     background: '#212121',
+    position:'fixed',  
   },
 };
 
@@ -80,7 +82,7 @@ class MenuAppBar extends React.Component {
               Title
             </Typography>
             <div              
-              className={classes.flex}                   
+              className={cls.datepicker}                   
             >
               <SingleDatePicker 
                 date={this.date} // momentPropTypes.momentObj or null

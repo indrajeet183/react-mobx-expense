@@ -20,13 +20,15 @@ import IconButton from 'material-ui/IconButton';
 import Tooltip from 'material-ui/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import {lighten} from 'material-ui/styles/colorManipulator';
 import cls from './Modal.css';
+import { inject } from 'mobx-react';
+import {observer} from 'mobx-react';
+import { observable } from 'mobx';
 
 let counter = 0;
-function createData (no, name, type, quantity, totalPrice) {
+function createData (no, name, type, quantity, totalPrice,price) {
   counter += 1;
-  return {id: counter, no, name, type, quantity, totalPrice};
+  return {id: counter, no, name, type, quantity, totalPrice,price};
 }
 
 const CustomTableCell = withStyles (theme => ({
@@ -204,101 +206,97 @@ const styles = theme => ({
   },
 });
 
-class EnhancedTable extends React.Component {
-  constructor (props, context) {
-    super (props, context);
-
-    this.state = {
-      order: 'asc',
-      orderBy: 'name',
-      selected: [],
-      data: [
-        createData (1, 'First Item', 'TestType', 4, 80),
-        createData (2, 'Second Item', 'TestType2', 5, 90),
-      ].sort ((a, b) => (a.name < b.name ? -1 : 1)),
-      page: 0,
-      rowsPerPage: 5,
-    };
-  }
+@inject("expenseStore")
+@observer class EnhancedTable extends React.Component {
+  @observable order = 'asc'
+  @observable orderBy = 'name'
+  @observable selected = []
+  @observable data = []
+  @observable page = 0
+  @observable rowsPerPage = 5
+  
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
 
-    if (this.state.orderBy === property && this.state.order === 'desc') {
+    if (this.orderBy === property && this.order === 'desc') {
       order = 'asc';
     }
 
     const data = order === 'desc'
-      ? this.state.data.sort ((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-      : this.state.data.sort ((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+      ? this.data.sort ((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
+      : this.data.sort ((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
-    this.setState ({data, order, orderBy});
+    this.data = data
+    this.order = order
+    this.orderBy = orderBy    
   };
 
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState ({selected: this.state.data.map (n => n.id)});
+      this.selected =  this.data.map (n => n.id);
       return;
     }
-    this.setState ({selected: []});
+    this.selected = []
   };
 
   handleClick = (event, id) => {
-    const {selected} = this.state;
-    const selectedIndex = selected.indexOf (id);
+    const selectedIndex = this.selected.indexOf (id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat (selected, id);
+      newSelected = newSelected.concat (this.selected, id);
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat (selected.slice (1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat (selected.slice (0, -1));
+      newSelected = newSelected.concat (this.selected.slice (1));
+    } else if (selectedIndex === this.selected.length - 1) {
+      newSelected = newSelected.concat (this.selected.slice (0, -1));
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat (
-        selected.slice (0, selectedIndex),
-        selected.slice (selectedIndex + 1)
+        this.selected.slice (0, selectedIndex),
+        this.selected.slice (selectedIndex + 1)
       );
     }
 
-    this.setState ({selected: newSelected});
+    this.selected = newSelected
   };
 
   handleChangePage = (event, page) => {
-    this.setState ({page});
+    this.page = page
   };
 
   handleChangeRowsPerPage = event => {
-    this.setState ({rowsPerPage: event.target.value});
+    this.rowsPerPage = event.target.value
   };
 
-  isSelected = id => this.state.selected.indexOf (id) !== -1;
+  isSelected = id => this.selected.indexOf (id) !== -1;
 
   render () {
-    const {classes} = this.props;
-    const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
-    const emptyRows =
-      rowsPerPage - Math.min (rowsPerPage, data.length - page * rowsPerPage);
+    const {classes, expenseStore} = this.props;    
+    const data1 = expenseStore.items.map((ele,index) => {
+      return createData(index+1,ele.name,ele.type,ele.quantity,ele.totalPrice,ele.price)
+    })    
+    console.log(data1)
+
 
     return (
       <Grid container style={{paddingLeft: '2rem'}}>
         <Grid item xs={12} sm={6}>
           <Paper className={classes.root}>
-            <EnhancedTableToolbar numSelected={selected.length} />
+            <EnhancedTableToolbar numSelected={this.selected.length} />
 
             <Table aria-labelledby="tableTitle">
               <EnhancedTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
+                numSelected={this.selected.length}
+                order={this.order}
+                orderBy={this.orderBy}
                 onSelectAllClick={this.handleSelectAllClick}
                 onRequestSort={this.handleRequestSort}
-                rowCount={data.length}
+                rowCount={this.data.length}
               />
               <TableBody>
-                {data
-                  .slice (page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                {data1
+                  .slice (this.page * this.rowsPerPage, this.page * this.rowsPerPage + this.rowsPerPage)
                   .map (n => {
                     const isSelected = this.isSelected (n.id);
                     return (
@@ -323,7 +321,7 @@ class EnhancedTable extends React.Component {
                         </TableCell>
                         <TableCell style={{padding: '0'}}>
                           {n.totalPrice}
-                          <Chip label={'All ' + 100} className={classes.chip} />
+                          {n.quantity?<Chip label={'Each ' + n.price} className={classes.chip} />:<Chip label={'All ' + n.price} className={classes.chip} />}
                         </TableCell>
                       </TableRow>
                     );
@@ -338,7 +336,7 @@ class EnhancedTable extends React.Component {
                     Total
                   </CustomTableCell>
                   <CustomTableCell padding="dense">
-                    {100}
+                    {expenseStore.totalPrice}
                   </CustomTableCell>
                 </CustomTableRow>
               </TableBody>
@@ -346,9 +344,9 @@ class EnhancedTable extends React.Component {
 
             <TablePagination
               component="div"
-              count={data.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
+              count={this.data.length}
+              rowsPerPage={this.rowsPerPage}
+              page={this.page}
               backIconButtonProps={{
                 'aria-label': 'Previous Page',
               }}

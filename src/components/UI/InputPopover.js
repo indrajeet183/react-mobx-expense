@@ -10,7 +10,7 @@ import Select from 'material-ui/Select';
 import {MenuItem} from 'material-ui/Menu';
 import Button from 'material-ui/Button';
 import Save from '@material-ui/icons/Save';
-import {observer} from 'mobx-react';
+import {observer, inject} from 'mobx-react';
 import {observable} from 'mobx';
 import Popover from 'material-ui/Popover';
 
@@ -64,6 +64,7 @@ const styles = theme => ({
   },
 });
 
+@inject("expenseStore")
 @observer class InputPopover extends Component {
   @observable name = '';
   @observable price = 0;
@@ -72,7 +73,8 @@ const styles = theme => ({
   @observable selected = [];
 
   handleAddExpense = item => {
-    this.props.list.addItem ({
+    const { expenseStore } = this.props;    
+    expenseStore.addItem ({
       name: this.name,
       price: parseInt (this.price, 10),
       quantity: parseInt (this.quantity, 10),
@@ -104,7 +106,7 @@ const styles = theme => ({
         }}
         style={{margin: '10px'}}
       >
-        <Grid container spacing={12} style={{display:'block'}}>
+        <Grid container style={{display:'block'}}>
           <Grid item>
             <TextField
               id="name"

@@ -23,7 +23,7 @@ class ExpenseTypeBtn extends Component {
           container
           justify="center"
           spacing={40}
-          style={{width: '100%', paddingTop: '2%'}}
+          style={{width: '100%', paddingTop: '2%',marginTop:'2rem'}}
           align="left"
         >
         {this.types.map((ele,index) => {

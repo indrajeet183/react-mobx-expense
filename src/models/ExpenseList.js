@@ -34,7 +34,7 @@ export const Expense = types.model({
  * Also have date as unique identifier
  */
 export const DailyExpense = types.model({
-    date:types.string,
+    date:types.optional(types.string,''),
     items:types.optional(types.array(Expense),[])
 }).actions(self => ({
     changeDate (newDate) {
@@ -55,3 +55,11 @@ export const DailyExpense = types.model({
         return self.items.reduce((sum,entry) => sum+(entry.price * (entry.quantity?entry.quantity:1)),0)
     }
 }))
+
+const expenseStore = DailyExpense.create({
+
+})
+
+export default expenseStore
+
+
