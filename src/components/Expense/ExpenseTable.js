@@ -27,9 +27,9 @@ import {observable} from 'mobx';
 import LineChart from '../UI/Chart/LineChart';
 
 let counter = 0;
-function createData (no, name, type, quantity, totalPrice, price) {
+function createData (name, type, quantity, totalPrice, price) {
   counter += 1;
-  return {id: counter, no, name, type, quantity, totalPrice, price};
+  return {id: counter, name, type, quantity, totalPrice, price};
 }
 
 const CustomTableCell = withStyles (theme => ({
@@ -50,7 +50,7 @@ const CustomTableRow = withStyles (theme => ({
 })) (TableRow);
 
 const columnData = [
-  {id: 'no', numeric: false, disablePadding: false, label: 'Sr.No'},
+  {id: 'id', numeric: false, disablePadding: false, label: 'Sr.No'},
   {id: 'name', numeric: false, disablePadding: false, label: 'Name'},
   {id: 'type', numeric: false, disablePadding: false, label: 'Type'},
   {id: 'quantity', numeric: false, disablePadding: false, label: 'Quantity'},
@@ -194,6 +194,13 @@ const styles = theme => ({
     width: '100%',
     marginTop: theme.spacing.unit * 3,
   },
+  checkbox: {
+    color: 'rgba(223,244,66,0.8))',
+    '&$checked': {
+      color: 'rgba(66,214,235,0.8)',
+    },
+  },
+  checked: {},
   table: {
     minWidth: 1020,
   },
@@ -236,7 +243,9 @@ class EnhancedTable extends React.Component {
 
   handleSelectAllClick = (event, checked) => {
     if (checked) {
+      console.log (this.data);
       this.selected = this.data.map (n => n.id);
+      console.log (this.selected);
       return;
     }
     this.selected = [];
@@ -245,9 +254,11 @@ class EnhancedTable extends React.Component {
   handleClick = (event, id) => {
     const selectedIndex = this.selected.indexOf (id);
     let newSelected = [];
-
+    console.log ('id', id);
+    console.log ('selectedIndex', selectedIndex);
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat (this.selected, id);
+      console.log ('in add id', this.selected);
+      newSelected = [...this.selected, id];
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat (this.selected.slice (1));
     } else if (selectedIndex === this.selected.length - 1) {
@@ -259,6 +270,7 @@ class EnhancedTable extends React.Component {
       );
     }
 
+    console.log (newSelected);
     this.selected = newSelected;
   };
 
@@ -270,13 +282,11 @@ class EnhancedTable extends React.Component {
     this.rowsPerPage = event.target.value;
   };
 
-  isSelected = id => this.selected.indexOf (id) !== -1;
-
-  render () {
-    const {classes, expenseStore} = this.props;
-    const data1 = expenseStore.items.map ((ele, index) => {
+  componentWillUpdate () {
+    const {expenseStore} = this.props;
+    counter = 0;
+    const data = expenseStore.items.map ((ele, index) => {
       return createData (
-        index + 1,
         ele.name,
         ele.type,
         ele.quantity,
@@ -284,7 +294,14 @@ class EnhancedTable extends React.Component {
         ele.price
       );
     });
-    console.log (data1);
+    console.log (data);
+    this.data = data;
+  }
+
+  isSelected = id => this.selected.indexOf (id) !== -1;
+
+  render () {
+    const {classes, expenseStore} = this.props;
 
     return (
       <Grid container style={{paddingLeft: '2rem'}} spacing={24}>
@@ -302,7 +319,7 @@ class EnhancedTable extends React.Component {
                 rowCount={this.data.length}
               />
               <TableBody>
-                {data1
+                {this.data
                   .slice (
                     this.page * this.rowsPerPage,
                     this.page * this.rowsPerPage + this.rowsPerPage
@@ -319,10 +336,16 @@ class EnhancedTable extends React.Component {
                         className={cls['table-row']}
                       >
                         <TableCell padding="checkbox" style={{padding: '0'}}>
-                          <Checkbox checked={isSelected} />
+                          <Checkbox
+                            checked={isSelected}
+                            classes={{
+                              root: classes.checkbox,
+                              checked: classes.checked,
+                            }}
+                          />
                         </TableCell>
                         <TableCell style={{padding: '0'}}>
-                          {n.no}
+                          {n.id}
                         </TableCell>
                         <TableCell style={{padding: '0'}}>{n.name}</TableCell>
                         <TableCell style={{padding: '0'}}>{n.type}</TableCell>
@@ -378,7 +401,10 @@ class EnhancedTable extends React.Component {
         </Grid>
         <Grid item xs={12} sm={5}>
           <Paper className={classes.root}>
-            <LineChart />
+            <LineChart
+              labels={expenseStore.allCategories}
+              chartData={expenseStore.chartData}
+            />
           </Paper>
         </Grid>
       </Grid>

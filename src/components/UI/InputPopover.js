@@ -81,6 +81,8 @@ const styles = theme => ({
       type: this.props.type,
     });
     this.clear ();
+    console.log('Categories',expenseStore.allCategories);
+    console.log('Chart Data',expenseStore.chartData);
   };
 
   clear = () => {

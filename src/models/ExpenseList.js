@@ -53,6 +53,20 @@ export const DailyExpense = types.model({
 })).views(self => ({
     get totalPrice () {
         return self.items.reduce((sum,entry) => sum+(entry.price * (entry.quantity?entry.quantity:1)),0)
+    },
+    get allCategories () {
+        return self.items.reduce((a,k)=>(a.includes(k.type)||a.push(k.type),a),[])
+    },
+    get chartData () {
+        const labels = this.allCategories;
+        let data = [];
+
+        self.items.forEach((ele) => {
+            let index = labels.indexOf(ele.type);
+            data[index]?data[index]+=ele.price:data[index]=ele.price
+        })
+
+        return data;
     }
 }))
 
