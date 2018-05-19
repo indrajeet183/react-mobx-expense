@@ -84,6 +84,7 @@ class EnhancedTableHead extends React.Component {
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={numSelected === rowCount}
               onChange={onSelectAllClick}
+              style={{color: 'rgba(66,214,235,0.8)'}}
             />
           </TableCell>
           {columnData.map (column => {
@@ -195,7 +196,7 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
   },
   checkbox: {
-    color: 'rgba(223,244,66,0.8))',
+    color: 'rgba(66,214,235,0.8)',
     '&$checked': {
       color: 'rgba(66,214,235,0.8)',
     },
@@ -223,6 +224,12 @@ class EnhancedTable extends React.Component {
   @observable data = [];
   @observable page = 0;
   @observable rowsPerPage = 5;
+  @observable property = null;
+
+  set squared (value) {
+    //this is automatically an action, no annotation necessary
+    this.length = Math.sqrt (value);
+  }
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -232,20 +239,24 @@ class EnhancedTable extends React.Component {
       order = 'asc';
     }
 
+    // console.log(order,property)
+
     const data = order === 'desc'
       ? this.data.sort ((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
       : this.data.sort ((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
+    // console.log(data)
     this.data = data;
+    // console.log(this.data)
     this.order = order;
     this.orderBy = orderBy;
   };
 
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      console.log (this.data);
+      // console.log (this.data);
       this.selected = this.data.map (n => n.id);
-      console.log (this.selected);
+      //  console.log (this.selected);
       return;
     }
     this.selected = [];
@@ -254,10 +265,10 @@ class EnhancedTable extends React.Component {
   handleClick = (event, id) => {
     const selectedIndex = this.selected.indexOf (id);
     let newSelected = [];
-    console.log ('id', id);
-    console.log ('selectedIndex', selectedIndex);
+    //  console.log ('id', id);
+    // console.log ('selectedIndex', selectedIndex);
     if (selectedIndex === -1) {
-      console.log ('in add id', this.selected);
+      //    console.log ('in add id', this.selected);
       newSelected = [...this.selected, id];
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat (this.selected.slice (1));
@@ -270,7 +281,7 @@ class EnhancedTable extends React.Component {
       );
     }
 
-    console.log (newSelected);
+    //   console.log (newSelected);
     this.selected = newSelected;
   };
 
@@ -282,7 +293,8 @@ class EnhancedTable extends React.Component {
     this.rowsPerPage = event.target.value;
   };
 
-  componentWillUpdate () {
+  UNSAFE_componentWillUpdate (nextProps, nextState) {
+    console.log (nextProps, nextState);
     const {expenseStore} = this.props;
     counter = 0;
     const data = expenseStore.items.map ((ele, index) => {
@@ -294,8 +306,9 @@ class EnhancedTable extends React.Component {
         ele.price
       );
     });
-    console.log (data);
+    //console.log (data);
     this.data = data;
+    this.handleRequestSort (null, this.orderBy);
   }
 
   isSelected = id => this.selected.indexOf (id) !== -1;
