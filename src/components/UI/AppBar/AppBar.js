@@ -79,7 +79,7 @@ class MenuAppBar extends React.Component {
               color="inherit"
               className={classes.flex}
             >
-              Title
+              Expense Demo
             </Typography>
             <div              
               className={cls.datepicker}                   

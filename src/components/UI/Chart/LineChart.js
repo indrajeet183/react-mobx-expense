@@ -9,9 +9,12 @@ export default class LineChart extends Component {
 
     const data = canvas => {
       const ctx = canvas.getContext ('2d');
-      var gradient = ctx.createLinearGradient(0, 0, 0, 600);
-      gradient.addColorStop(0, 'rgba(66, 214, 235, 0.8)');
-      gradient.addColorStop(1, 'rgba(223, 244, 66, 0.8)');
+      if(ctx!=undefined){
+        var gradient = ctx.createLinearGradient(0, 0, 0, 600);
+        gradient.addColorStop(0, 'rgba(66, 214, 235, 0.8)');
+        gradient.addColorStop(1, 'rgba(223, 244, 66, 0.8)');
+      }
+
       return {
         labels: labels,
         datasets: [

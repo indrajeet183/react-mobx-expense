@@ -63,7 +63,8 @@ export const DailyExpense = types.model({
 
         self.items.forEach((ele) => {
             let index = labels.indexOf(ele.type);
-            data[index]?data[index]+=ele.price:data[index]=ele.price
+            let quantity = ele.quantity?ele.quantity:1
+            data[index]?data[index]+=ele.price*quantity:data[index]=ele.price*quantity
         })
 
         return data;
