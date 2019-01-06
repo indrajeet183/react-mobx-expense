@@ -5,10 +5,12 @@ import { types } from 'mobx-state-tree';
  * Expense model which holds individual item
  */
 export const Expense = types.model({
+    _id:types.optional(types.string,''),    
     name:types.string,
     price:types.number,
     quantity:types.number,    
-    type:types.string
+    type:types.string,
+    date:types.optional(types.string,'')
 }).actions(self => ({
     changeName(newName) {
         self.name = newName
@@ -34,7 +36,7 @@ export const Expense = types.model({
  * Also have date as unique identifier
  */
 export const DailyExpense = types.model({
-    date:types.optional(types.string,''),
+    date:types.optional(types.string,''),    
     items:types.optional(types.array(Expense),[])
 }).actions(self => ({
     changeDate (newDate) {
@@ -49,6 +51,9 @@ export const DailyExpense = types.model({
                 return e
         })
         self.items.splice(index,1)
+    },
+    replaceItemArr(arr){
+        self.items = arr
     }
 })).views(self => ({
     get totalPrice () {

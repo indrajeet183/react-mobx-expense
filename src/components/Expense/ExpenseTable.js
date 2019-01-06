@@ -19,11 +19,14 @@ import Checkbox from "material-ui/Checkbox";
 import IconButton from "material-ui/IconButton";
 import Tooltip from "material-ui/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import cls from "./Modal.css";
-import { observer,inject } from "mobx-react";
-import { observable,computed,toJS } from "mobx";
+import { observer, inject } from "mobx-react";
+import { observable, computed, toJS } from "mobx";
 import LineChart from "../UI/Chart/LineChart";
+import { getExpense } from "../../services/Api";
+import Icon from "@material-ui/core/Icon";
 
 let counter = 0;
 function createData(name, type, quantity, totalPrice, price) {
@@ -59,7 +62,8 @@ const columnData = [
     numeric: false,
     disablePadding: false,
     label: "Total Price"
-  }
+  },
+  { id: "actions", numeric: false, disablePadding: false, label: "Actions" }
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -224,7 +228,7 @@ const styles = theme => ({
 class EnhancedTable extends React.Component {
   @observable order = "asc";
   @observable orderBy = "name";
-  @observable selected = [];  
+  @observable selected = [];
   @observable page = 0;
   @observable data = [];
   @observable rowsPerPage = 5;
@@ -239,21 +243,10 @@ class EnhancedTable extends React.Component {
     const orderBy = property;
     let order = "desc";
 
-    // console.log(this.orderBy, this.order);
     if (this.orderBy === property && this.order === "desc") {
       order = "asc";
     }
 
-    // console.log(order, property);
-
-    // let oldData = [...this.data];
-    // console.log(oldData);
-    // let data = [];
-    // order === "desc"
-    //   ? (data = oldData.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)))
-    //   : (data = oldData.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1)));
-
-    // this.data = data;
     this.order = order;
     this.orderBy = orderBy;
   };
@@ -269,11 +262,14 @@ class EnhancedTable extends React.Component {
         ele.price
       );
     });
-    
-    
+
     this.order === "desc"
-      ? (data = data.sort((a, b) => (b[this.orderBy] < a[this.orderBy] ? -1 : 1)))
-      : (data = data.sort((a, b) => (a[this.orderBy] < b[this.orderBy] ? -1 : 1)));
+      ? (data = data.sort((a, b) =>
+          b[this.orderBy] < a[this.orderBy] ? -1 : 1
+        ))
+      : (data = data.sort((a, b) =>
+          a[this.orderBy] < b[this.orderBy] ? -1 : 1
+        ));
 
     return data;
   };
@@ -290,30 +286,6 @@ class EnhancedTable extends React.Component {
   };
 
   handleClick = (event, id) => {
-    // console.log(toJS(this.selected))
-    // const selectedIndex = this.selected.indexOf (id);
-    // let newSelected = [];
-    //  console.log ('id', id);
-    // console.log ('selectedIndex', selectedIndex);
-    // if (selectedIndex === -1) {
-    //   //    console.log ('in add id', this.selected);
-    //   newSelected = [...this.selected, id];
-    // }
-    //  else if (selectedIndex === 0) {
-    //   newSelected = newSelected.concat (this.selected.slice (1));
-    // }
-    //  else if (selectedIndex === this.selected.length - 1) {
-    //   newSelected = newSelected.concat (this.selected.slice (0, -1));
-    // }
-    // if (selectedIndex > 0) {
-    //   newSelected = newSelected.concat (
-    //     this.selected.slice (0, selectedIndex),
-    //     this.selected.slice (selectedIndex + 1)
-    //   );
-    // }
-
-    // // //   console.log (newSelected);
-    // this.selected = newSelected;
     const selectedIndex = this.selected.indexOf(id);
     //console.log(selectedIndex);
     let newSelected = [];
@@ -342,24 +314,6 @@ class EnhancedTable extends React.Component {
     this.rowsPerPage = event.target.value;
   };
 
-  // UNSAFE_componentWillUpdate (nextProps, nextState) {
-  //   console.log (nextProps, nextState);
-  // const {expenseStore} = this.props;
-  // counter = 0;
-  // const data = expenseStore.items.map ((ele, index) => {
-  //   return createData (
-  //     ele.name,
-  //     ele.type,
-  //     ele.quantity,
-  //     ele.totalPrice,
-  //     ele.price
-  //   );
-  // });
-  //   //console.log (data);
-  //   this.data = data;
-  //   //this.handleRequestSort (null, this.orderBy);
-  // }
-
   isSelected = id => this.selected.indexOf(id) !== -1;
 
   render() {
@@ -381,8 +335,7 @@ class EnhancedTable extends React.Component {
                 rowCount={this.getStoreData().length}
               />
               <TableBody>
-                {
-                  this.getStoreData()
+                {this.getStoreData()
                   .slice(
                     this.page * this.rowsPerPage,
                     this.page * this.rowsPerPage + this.rowsPerPage
@@ -390,8 +343,7 @@ class EnhancedTable extends React.Component {
                   .map(n => {
                     const isSelected = this.isSelected(n.id);
                     return (
-                      <TableRow
-                        onClick={event => this.handleClick(event, n.id)}
+                      <TableRow                        
                         role="checkbox"
                         aria-checked={isSelected}
                         tabIndex={-1}
@@ -400,6 +352,7 @@ class EnhancedTable extends React.Component {
                       >
                         <TableCell padding="checkbox" style={{ padding: "0" }}>
                           <Checkbox
+                            onChange={event => this.handleClick(event, n.id)}
                             checked={isSelected}
                             classes={{
                               root: classes.checkbox,
@@ -426,6 +379,11 @@ class EnhancedTable extends React.Component {
                               className={classes.chip}
                             />
                           )}
+                        </TableCell>
+                        <TableCell style={{ padding: "0" }}>
+                          <IconButton onClick={() => {console.log('asd')}}>
+                            <EditIcon/>
+                          </IconButton>
                         </TableCell>
                       </TableRow>
                     );

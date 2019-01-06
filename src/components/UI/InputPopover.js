@@ -3,7 +3,8 @@ import {withStyles} from 'material-ui/styles';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
-import TextField from 'material-ui/TextField';
+// import TextField from 'material-ui/TextField';
+import TextField from '@material-ui/core/TextField';
 import {InputLabel} from 'material-ui/Input';
 import classNames from 'classnames';
 import Select from 'material-ui/Select';
@@ -11,8 +12,9 @@ import {MenuItem} from 'material-ui/Menu';
 import Button from 'material-ui/Button';
 import Save from '@material-ui/icons/Save';
 import {observer, inject} from 'mobx-react';
-import {observable} from 'mobx';
+import {observable,toJS} from 'mobx';
 import Popover from 'material-ui/Popover';
+import { addExpense } from '../../services/Api'
 
 const styles = theme => ({
   root: theme.mixins.gutters ({
@@ -62,6 +64,9 @@ const styles = theme => ({
   bootstrapFormLabel: {
     fontSize: 18,
   },
+  popover: {
+    padding:'1rem'
+  }
 });
 
 @inject("expenseStore")
@@ -74,12 +79,17 @@ const styles = theme => ({
 
   handleAddExpense = item => {
     const { expenseStore } = this.props;    
-    expenseStore.addItem ({
+    console.log(expenseStore)
+    const data = {
       name: this.name,
       price: parseInt (this.price, 10),
       quantity: parseInt (this.quantity, 10),
       type: this.props.type,
-    });
+    }
+
+    expenseStore.addItem (data)
+    console.log(toJS(expenseStore))
+    addExpense({...data,date:expenseStore.date}).then((res)=> console.log(res));
     this.clear ();
     console.log('Categories',expenseStore.allCategories);
     console.log('Chart Data',expenseStore.chartData);
@@ -108,7 +118,7 @@ const styles = theme => ({
         }}
         style={{margin: '10px'}}
       >
-        <Grid container style={{display:'block'}}>
+        <Grid container style={{display:'block'}} className={classes.popover}>
           <Grid item>
             <TextField
               id="name"
@@ -117,6 +127,7 @@ const styles = theme => ({
               value={this.name}
               onChange={e => (this.name = e.target.value)}
               margin="normal"
+              variant="outlined"
             />            
           </Grid>
           <Grid item>
@@ -127,6 +138,7 @@ const styles = theme => ({
               value={type}
               margin="normal"
               disabled={true}
+              variant="outlined"
             />
           </Grid>
           <Grid item>
@@ -137,6 +149,7 @@ const styles = theme => ({
               value={this.price}
               onChange={e => (this.price = e.target.value)}
               margin="normal"
+              variant="outlined"
             />
           </Grid>
           <Grid item>
@@ -147,6 +160,7 @@ const styles = theme => ({
               value={this.quantity}
               onChange={e => (this.quantity = e.target.value)}
               margin="normal"
+              variant="outlined"
             />
           </Grid>
           <Grid item>

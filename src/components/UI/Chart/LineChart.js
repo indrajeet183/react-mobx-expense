@@ -19,7 +19,7 @@ export default class LineChart extends Component {
         labels: labels,
         datasets: [
           {
-            label: 'My First dataset',            
+            label: 'Daily',            
             lineTension: 0.1,
             backgroundColor:gradient,
             borderColor: 'rgba(75,192,192,1)',
@@ -47,7 +47,7 @@ export default class LineChart extends Component {
     return (
       <div className={cls['chart-box']}>
         <Bar data={data} />
-        <h2>Line Example</h2>
+        <h2>Daily</h2>
       </div>
     );
   }

@@ -14,9 +14,10 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Menu, {MenuItem} from 'material-ui/Menu';
 import { SingleDatePicker } from 'react-dates';
 import { observable } from 'mobx';
-import { observer } from 'mobx-react';
+import { observer,inject } from 'mobx-react';
 import moment from 'moment';
 import * as cls from './AppBar.css';
+import { getExpense } from '../../../services/Api'
 
 
 
@@ -37,6 +38,7 @@ const styles = {
   },
 };
 
+@inject("expenseStore")
 @observer
 class MenuAppBar extends React.Component {
   @observable date = moment()
@@ -44,6 +46,20 @@ class MenuAppBar extends React.Component {
     auth: true,
     anchorEl: null,
   };
+
+  constructor(props){
+    super(props);
+    props.expenseStore.changeDate(this.date.format('Y-MM-DD'))
+    this.initializeData()
+  }
+
+  initializeData(){
+    getExpense(this.props.expenseStore.date).
+      then((res) => {
+        console.log(res)
+        this.props.expenseStore.replaceItemArr(res.data)
+      })
+  }
 
   handleChange = (event, checked) => {
     this.setState ({auth: checked});
@@ -59,7 +75,7 @@ class MenuAppBar extends React.Component {
 
 
   render () {
-    const {classes} = this.props;
+    const {classes,expenseStore} = this.props;
     const {auth, anchorEl} = this.state;
     const open = Boolean (anchorEl);
 
@@ -86,7 +102,7 @@ class MenuAppBar extends React.Component {
             >
               <SingleDatePicker 
                 date={this.date} // momentPropTypes.momentObj or null
-                onDateChange={date => {this.date = date}} // PropTypes.func.isRequired
+                onDateChange={date => {this.date = date;console.log(this.date);expenseStore.changeDate(date.format('Y-MM-DD'));this.initializeData()}} // PropTypes.func.isRequired
                 focused={this.state.focused} // PropTypes.bool
                 onFocusChange={({ focused }) => this.setState({ focused })} // PropTypes.func.isRequired
                 numberOfMonths={1}
