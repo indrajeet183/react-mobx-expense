@@ -77,10 +77,19 @@ const styles = theme => ({
   @observable type = '';
   @observable selected = [];
 
+  decimalToHexString(number){
+    if (number < 0){
+      number = 0xFFFFFFFF + number + 1;
+    }
+
+    return number.toString(16).toUpperCase();
+  }
+
   handleAddExpense = item => {
     const { expenseStore } = this.props;    
     console.log(expenseStore)
     const data = {
+      _id:this.decimalToHexString(new Date().getTime()),
       name: this.name,
       price: parseInt (this.price, 10),
       quantity: parseInt (this.quantity, 10),
@@ -102,7 +111,7 @@ const styles = theme => ({
   };
 
   render () {
-    const {classes, anchorEl, type} = this.props;
+    const {classes, anchorEl, type,inputData} = this.props;
     return (
       <Popover
         open={Boolean (anchorEl)}

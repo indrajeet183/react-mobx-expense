@@ -20,18 +20,22 @@ import IconButton from "material-ui/IconButton";
 import Tooltip from "material-ui/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import Save from '@material-ui/icons/Save';
 import FilterListIcon from "@material-ui/icons/FilterList";
 import cls from "./Modal.css";
 import { observer, inject } from "mobx-react";
 import { observable, computed, toJS } from "mobx";
 import LineChart from "../UI/Chart/LineChart";
+import InputPopover from "../UI/InputPopover";
 import { getExpense } from "../../services/Api";
 import Icon from "@material-ui/core/Icon";
+import TextField from "@material-ui/core/TextField";
+import InputBase from "@material-ui/core/InputBase";
 
 let counter = 0;
-function createData(name, type, quantity, totalPrice, price) {
-  counter += 1;
-  return { id: counter, name, type, quantity, totalPrice, price };
+function createData(id, name, type, quantity, totalPrice, price) {
+  //counter += 1;
+  return { id: id, name, type, quantity, totalPrice, price };
 }
 
 const CustomTableCell = withStyles(theme => ({
@@ -220,6 +224,12 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     backgroundColor: "#212121",
     color: "#fff"
+  },
+  editInput: {
+    border: "1px solid",
+    borderRadius: "3px",
+    borderColor: "#777",
+    width: "8rem"
   }
 });
 
@@ -233,10 +243,16 @@ class EnhancedTable extends React.Component {
   @observable data = [];
   @observable rowsPerPage = 5;
   @observable property = null;
+  @observable anchorEl = null;
+  @observable editedId = true;
 
   set squared(value) {
     //this is automatically an action, no annotation necessary
     this.length = Math.sqrt(value);
+  }
+  
+  set d(v) {
+    this.data = v
   }
 
   handleRequestSort = (event, property) => {
@@ -251,10 +267,23 @@ class EnhancedTable extends React.Component {
     this.orderBy = orderBy;
   };
 
-  getStoreData = () => {
+  handleEditClick = () => {    
+    this.editedId=false
+    this.data = this.getStoreData()
+  }
+
+  handleExpenseUpdate = (id,index) => {
+    console.log('asdad')
+    const item = this.props.expenseStore.getItem(id)    
+    item[0].updateItem(this.data[index])    
+    this.editedId=!this.editedId
+  }
+
+  getStoreData = () => {    
     counter = 0;
     let data = this.props.expenseStore.items.map((ele, index) => {
       return createData(
+        ele._id,
         ele.name,
         ele.type,
         ele.quantity,
@@ -269,8 +298,7 @@ class EnhancedTable extends React.Component {
         ))
       : (data = data.sort((a, b) =>
           a[this.orderBy] < b[this.orderBy] ? -1 : 1
-        ));
-
+        ));    
     return data;
   };
 
@@ -283,6 +311,10 @@ class EnhancedTable extends React.Component {
       return;
     }
     this.selected = [];
+  };
+
+  handleClose = () => {
+    this.anchorEl = null;
   };
 
   handleClick = (event, id) => {
@@ -340,15 +372,15 @@ class EnhancedTable extends React.Component {
                     this.page * this.rowsPerPage,
                     this.page * this.rowsPerPage + this.rowsPerPage
                   )
-                  .map(n => {
+                  .map((n,_i) => {
                     const isSelected = this.isSelected(n.id);
                     return (
-                      <TableRow                        
+                      <TableRow
                         role="checkbox"
                         aria-checked={isSelected}
                         tabIndex={-1}
                         key={n.id}
-                        className={cls["table-row"]}
+                        //className={cls["table-row"]}
                       >
                         <TableCell padding="checkbox" style={{ padding: "0" }}>
                           <Checkbox
@@ -360,11 +392,36 @@ class EnhancedTable extends React.Component {
                             }}
                           />
                         </TableCell>
-                        <TableCell style={{ padding: "0" }}>{n.id}</TableCell>
-                        <TableCell style={{ padding: "0" }}>{n.name}</TableCell>
-                        <TableCell style={{ padding: "0" }}>{n.type}</TableCell>
+                        <TableCell style={{ padding: "0" }}>{_i+1}</TableCell>
                         <TableCell style={{ padding: "0" }}>
-                          {n.quantity}
+                        <span style={{display:!this.editedId?'none':''}}>{n.name}</span>
+                          <InputBase
+                            className={classes.editInput}
+                            value={this.data.length && this.data[_i]?this.data[_i].name:''}
+                            onChange={e => {this.data[_i].name = e.target.value}}
+                            disabled={this.editedId}
+                            style={{display:this.editedId?'none':''}}
+                          />
+                        </TableCell>
+                        <TableCell style={{ padding: "0" }}>
+                        <span style={{display:!this.editedId?'none':''}}>{n.type}</span>
+                          <InputBase
+                            className={classes.editInput}
+                            value={this.data.length && this.data[_i]?this.data[_i].type:''}
+                            onChange={e => {this.data[_i].type = e.target.value}}
+                            disabled={this.editedId}
+                            style={{display:this.editedId?'none':''}}
+                          />
+                        </TableCell>
+                        <TableCell style={{ padding: "0" }}>
+                        <span style={{display:!this.editedId?'none':''}}>{n.quantity}</span>
+                          <InputBase
+                            className={classes.editInput}
+                            value={this.data.length && this.data[_i]?this.data[_i].quantity:''}
+                            onChange={e => {this.data[_i].quantity = e.target.value}}
+                            disabled={this.editedId}
+                            style={{display:this.editedId?'none':'',width:'2.5rem'}}
+                          />
                         </TableCell>
                         <TableCell style={{ padding: "0" }}>
                           {n.totalPrice}
@@ -380,11 +437,21 @@ class EnhancedTable extends React.Component {
                             />
                           )}
                         </TableCell>
+                        {!this.editedId?
                         <TableCell style={{ padding: "0" }}>
-                          <IconButton onClick={() => {console.log('asd')}}>
-                            <EditIcon/>
-                          </IconButton>
-                        </TableCell>
+                          <IconButton
+                            onClick={()=> { this.handleExpenseUpdate(n.id,_i)}}
+                          >
+                            <Save/>                           
+                          </IconButton>                          
+                        </TableCell>:
+                        <TableCell style={{ padding: "0" }}>
+                          <IconButton
+                            onClick={() => { this.handleEditClick() }}
+                          >
+                            <EditIcon/>                            
+                          </IconButton>                          
+                        </TableCell>}
                       </TableRow>
                     );
                   })}

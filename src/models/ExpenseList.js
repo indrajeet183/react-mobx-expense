@@ -24,8 +24,13 @@ export const Expense = types.model({
     changeType(newType) {
         self.type = newType
     },
+    updateItem(item) {
+        self.name = item.name
+        self.price = item.price
+        self.quantity = parseInt(item.quantity)
+    }
 })).views(self => ({
-    get totalPrice () {
+    get totalPrice () {2
         return self.quantity?self.price * self.quantity:self.price
     }
 }))
@@ -54,6 +59,9 @@ export const DailyExpense = types.model({
     },
     replaceItemArr(arr){
         self.items = arr
+    },
+    getItem(id){
+        return self.items.filter(_v => { return _v._id == id })
     }
 })).views(self => ({
     get totalPrice () {
