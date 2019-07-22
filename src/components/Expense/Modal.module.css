@@ -1,0 +1,92 @@
+.paper {    
+    transition: all 0.3s ease-in-out;    
+    position: relative;    
+    cursor: pointer;    
+    height:80%;
+    width: 10rem;    
+    border-radius: 3px 40px !important;
+}
+
+.paper:hover{
+    transform: scale(1.2);
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;    
+    backface-visibility: hidden;    
+}
+
+.paper:active {
+    transform: scale(1);
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;    
+    backface-visibility: hidden;    
+}
+
+.paper:hover >.icon {
+    font-size: 3.5rem !important;
+    padding:1rem 0rem 1rem 1rem;
+    /* background-image: linear-gradient(to top right, #222, #777); */
+    background: linear-gradient(to top right,rgba(66,214,235,0.8),rgba(223,244,66,0.8));
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.icon {
+    font-size: 3.5rem !important;
+    padding:1rem 0rem 1rem 1rem;
+    /* background-image: linear-gradient(to top right, #222, #777); */
+    background: #222;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.iconText {
+    position: absolute;
+    font-size: 1rem;
+    top: 90%;
+    left: 50%;    
+    display: none;
+    transform: translate(0%,-50%);
+    color:#222;
+    font-weight: 600;
+    transition: all 0.1s ease-in-out;    
+}
+
+.paper:hover > .iconText {
+    display: block;
+    animation: bottomToTop .2s linear;
+    top: 50%;
+    left: 50%;
+    transition: all 0.1s ease-in-out;    
+}
+
+@keyframes bottomToTop {
+    0% {
+        top: 90%;
+    }
+    20% {
+        top: 80%;
+    }
+    30% {
+        top: 70%;
+    }        
+    50% {
+        top:65%;
+    }
+    70%{
+        top:60;
+    }
+    100% {
+        top:50%;
+    }
+}
+
+.table-row {
+    transition:transform 200ms;     
+}
+
+.table-row:hover {        
+    transform:scale(1.1);        
+    background:#f7f7f7;
+    transition:transform 200ms;     
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0)
+}

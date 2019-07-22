@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Noticia Text', serif;
+  height: 100vh;
+  background: linear-gradient(to top right,rgba(224, 224, 224, 0.8),rgba(255, 255, 254, 0.8));
+  /* background: #f7f7f7; */
+}
+
+/* td {
+  color:#fff !important;
+  font-weight: 500;
+  font-size: 1rem !important;
+} */

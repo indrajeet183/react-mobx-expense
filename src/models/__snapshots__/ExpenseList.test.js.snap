@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can create instance of model Expense 1`] = `
+Object {
+  "name": "First",
+  "price": 20,
+  "quantity": 4,
+  "type": "TestType",
+}
+`;
