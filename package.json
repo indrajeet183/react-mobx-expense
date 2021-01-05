@@ -11,7 +11,7 @@
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^1.1.1",
     "autoprefixer": "7.1.6",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "babel-eslint": "^9.0.0",
     "babel-jest": "^24.7.1",
     "babel-plugin-transform-react-pure-class-to-function": "^1.0.1",
