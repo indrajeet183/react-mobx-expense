@@ -37,7 +37,7 @@
     "mobx": "^4.9.4",
     "mobx-react": "^5.4.3",
     "mobx-state-tree": "^3.14.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "mongodb": "^3.2.3",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
